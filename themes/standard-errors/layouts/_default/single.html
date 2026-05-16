@@ -1,0 +1,9 @@
+{{ define "main" }}
+{{ if not .Params.hideWelcome }}
+  {{ partial "welcome.html" . }}
+{{ end }}
+
+<article>
+  {{ .Content }}
+</article>
+{{ end }}

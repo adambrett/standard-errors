@@ -1,0 +1,24 @@
+{{- $title := .Title | default site.Title -}}
+{{- $isHome := .IsHome -}}
+{{- $sameTitleAsSite := eq $title site.Title -}}
+{{- $desc := cond .IsPage (.Summary | plainify | default site.Params.description) site.Params.description -}}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+
+<title>{{ if or $isHome $sameTitleAsSite }}{{ site.Title }}{{ else }}{{ $title }} - {{ site.Title }}{{ end }}</title>
+<meta name="description" content="{{ $desc }}">
+
+<meta property="og:type" content="{{ cond .IsPage "article" "website" }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:description" content="{{ $desc }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta name="twitter:card" content="summary">
+
+{{- $adbr := resources.Get "css/vendor/adbr.css" -}}
+{{- $site := resources.Get "css/site.css" -}}
+{{- $css := slice $adbr $site | resources.Concat "css/bundle.css" | minify | fingerprint -}}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+
+<link rel="canonical" href="{{ .Permalink }}">

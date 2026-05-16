@@ -1,0 +1,7 @@
+name = "Standard Errors"
+license = "CC BY 4.0"
+description = "Hugo theme for the Standard Errors specification website"
+homepage = "https://github.com/adambrett/standard-errors"
+tags = []
+features = []
+min_version = "0.147.2"

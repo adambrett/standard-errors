@@ -1,0 +1,13 @@
+<!doctype html>
+{{- $target := printf "%s/" site.Params.versions.current | absURL -}}
+<html lang="{{ site.Language.Lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url={{ $target }}">
+  <link rel="canonical" href="{{ $target }}">
+  <title>{{ site.Title }}</title>
+</head>
+<body>
+  <p><a href="{{ $target }}">Continue to {{ site.Title }}</a></p>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<header>
+  <nav class="site-nav" aria-label="Primary">
+    {{- $currentVersion := printf "%s/" site.Params.versions.current | relURL -}}
+    <a class="site-nav__brand" href="{{ $currentVersion }}"{{ if eq .Section site.Params.versions.current }} aria-current="page"{{ end }}>
+      {{ site.Title }}
+    </a>
+    <a href="{{ $currentVersion }}#summary">Summary</a>
+    <a href="{{ $currentVersion }}#specification">Specification</a>
+    <a href="{{ $currentVersion }}#faq">FAQ</a>
+    <a href="{{ $currentVersion }}#examples">Examples</a>
+  </nav>
+</header>
