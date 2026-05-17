@@ -14,7 +14,7 @@ A Standard Errors diagnostic includes these fields:
 
 | Field | Required | Purpose |
 | --- | --- | --- |
-| Severity | Yes | The kind of failure: `Error`, `Warning`, or `Notice`. |
+| Severity | Yes | The kind of failure: `Error` or `Warning`. |
 | Code | Yes | A stable, unique identifier for the class of problem. |
 | Summary | Yes | A short statement of what failed. |
 | Description | Yes | What happened and, when known, why it happened. |
@@ -35,12 +35,12 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 1. A diagnostic MUST describe an unexpected system failure.
 2. A diagnostic MUST include a severity, code, summary, and description.
-3. Severity MUST be `Error`, `Warning`, or `Notice`.
+3. Severity MUST be `Error` or `Warning`.
 4. The code MUST be stable, unique within the application that emits it, visible to the user, and easy to search for. A source search for the code SHOULD lead an engineer to the line that generated the diagnostic.
 5. The summary MUST say what failed in plain language.
 6. The description MUST explain what happened. The description SHOULD explain why it happened in non-technical language.
 7. The impact SHOULD say what was saved, sent, charged, deleted, changed, or left untouched when that is not obvious.
-8. Errors and warnings MUST include a resolution with a concrete next step, or a clear way out when the user cannot fix the issue. Notices SHOULD include the same.
+8. A diagnostic MUST include a resolution with a concrete next step, or a clear way out when the user cannot fix the issue.
 9. A diagnostic SHOULD include a reference link to help docs, a status page, support instructions, or a runbook the audience can access when one is available.
 10. A trace ID SHOULD be included when it helps support or engineering find the specific occurrence.
 11. A diagnostic MUST NOT expose stack traces, raw exception messages, secrets, tokens, private data, user identifiers such as email addresses or account IDs, SQL errors, internal hostnames, or internal service names.
@@ -56,7 +56,6 @@ Use one of these values:
 
 - `Error` - the requested operation failed.
 - `Warning` - the operation completed with an unexpected limitation or degraded result.
-- `Notice` - something failed outside the current operation, usually in the background. This is not the syslog `NOTICE` level; a Standard Errors notice always describes a failure.
 
 ### Code
 
@@ -158,10 +157,6 @@ No. Validation feedback is a normal product outcome. Use ordinary field or form 
 
 Usually no. If the permission system is working as designed, explain the policy in normal product language. Use Standard Errors only when the system failed in an unexpected way.
 
-### Do notices replace status messages?
-
-No. Notices are only for unexpected failures outside the current operation.
-
 ### Does Standard Errors define the layout?
 
 No. A CLI, web app, mobile app, modal, toast, banner, or dialog can present the fields however it needs to. Keep the same meaning and make the message easy to copy or screenshot.
@@ -237,14 +232,14 @@ This modal puts the user-facing message first and keeps the support identifiers 
 
 ### Mobile
 
-This mobile notice uses a compact in-app card instead of a modal.
+This mobile warning uses a compact in-app card instead of a modal.
 
 <figure class="ui-example ui-example-mobile">
   <div class="phone-shell">
     <div class="phone-screen">
       <section class="mobile-alert" aria-labelledby="mobile-example-title">
         <div class="mobile-alert__meta">
-          <span class="mobile-badge">Notice</span>
+          <span class="mobile-badge">Warning</span>
           <span>sync/offline/not-sent</span>
         </div>
         <h4 id="mobile-example-title">Saved on this phone</h4>
