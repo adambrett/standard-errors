@@ -38,16 +38,17 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 3. Severity MUST be `Error`, `Warning`, or `Notice`.
    1. `Error` means the requested operation failed.
    2. `Warning` means the operation completed with an unexpected limitation or degraded result.
-   3. `Notice` means something failed outside the current operation, usually in the background.
-4. The code MUST be stable, unique across the codebase, visible to the user, and easy to search for. A source search for the code SHOULD lead an engineer to the line that generated the diagnostic.
+   3. `Notice` means something failed outside the current operation, usually in the background. This is not the syslog `NOTICE` level; a Standard Errors notice always describes a failure.
+4. The code MUST be stable, unique within the application that emits it, visible to the user, and easy to search for. A source search for the code SHOULD lead an engineer to the line that generated the diagnostic.
 5. The summary MUST say what failed in plain language.
 6. The description MUST explain what happened. The description SHOULD explain why it happened in non-technical language.
 7. The impact SHOULD say what was saved, sent, charged, deleted, changed, or left untouched when that is not obvious.
-8. Errors and warnings MUST include a resolution with a concrete next step, or a clear way out when the user cannot fix the issue.
-9. A reference MAY link to help docs, a status page, support instructions, or a runbook the audience can access.
+8. Errors and warnings MUST include a resolution with a concrete next step, or a clear way out when the user cannot fix the issue. Notices SHOULD include the same.
+9. A diagnostic SHOULD include a reference link to help docs, a status page, support instructions, or a runbook the audience can access when one is available.
 10. A trace ID SHOULD be included when it helps support or engineering find the specific occurrence.
-11. A diagnostic MUST NOT expose stack traces, raw exception messages, secrets, tokens, private data, SQL errors, internal hostnames, or internal service names.
-12. A diagnostic MUST NOT hide a known specific failure behind a generic message such as `Something went wrong`.
+11. A diagnostic MUST NOT expose stack traces, raw exception messages, secrets, tokens, private data, user identifiers such as email addresses or account IDs, SQL errors, internal hostnames, or internal service names.
+12. A diagnostic MUST NOT hide a known specific failure behind a generic message such as `Something went wrong`. When the failure class is genuinely unknown, the diagnostic MUST still include a stable code identifying the unknown-failure path, and SHOULD include a trace ID.
+13. The code MUST remain stable across locales. The summary, description, impact, and resolution MAY be localized.
 
 ---
 
@@ -55,15 +56,11 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ### Severity
 
-Use one of these values:
-
-- `Error` - the operation failed.
-- `Warning` - the operation completed, but part of it failed or degraded.
-- `Notice` - a background or related failure needs attention, but not immediate action.
+See item 3 of the specification for the meaning of each value.
 
 ### Code
 
-The code identifies the class of problem. It is for support, docs, and source search. It should be unique across the codebase so a search leads an engineer directly to the line that generated the diagnostic.
+The code identifies the class of problem. It is for support, docs, and source search. It should be unique within the application that emits it so a search leads an engineer directly to the line that generated the diagnostic.
 
 Products may use any code format that fits their codebase, support process, and documentation style. The code must be stable, unique, safe to show to users, and easy to search for.
 
@@ -133,13 +130,67 @@ Do not tell the user to do something unsafe, impossible, or unrelated.
 
 ### Reference
 
-Reference is optional, but preferred. Use it to link to help docs, support instructions, status pages, or runbooks that provide more information on the issue or resolutions.
+Reference is recommended whenever a suitable link exists. Use it to link to help docs, support instructions, status pages, or runbooks that provide more information on the issue or resolutions.
 
 ### Trace ID
 
 Trace ID is optional. It identifies one occurrence of the problem. It must be safe to share and copy as one value. It should be included when it helps support or engineering find the specific occurrence in logs, traces, or monitoring systems. It should not be included when it does not help or when it would be too difficult to correlate.
 
 The **code** identifies the kind of problem. The **trace ID** identifies this instance of that problem.
+
+---
+
+## Anti-patterns
+
+These are the failure messages Standard Errors exists to replace. If a diagnostic looks like any of these, treat it as a bug.
+
+### Generic mystery
+
+```text
+Something went wrong. Please try again.
+```
+
+No code, no cause, no impact, no real next step. The user cannot search for it, support cannot ask for it, and engineering cannot find where it came from.
+
+### Raw exception
+
+```text
+NullPointerException at com.example.svc.OrderProcessor.handle(OrderProcessor.java:142)
+```
+
+Leaks the internal stack, internal service names, and language detail. Says nothing about what the user lost or what to do.
+
+### Friendly nothing
+
+```text
+Oops! Our hamsters fell off the wheel. Try again later.
+```
+
+Cute tone, zero content. No code, no impact, no resolution. Hides a real failure behind a mascot.
+
+### Inaccurate reassurance
+
+```text
+Your changes have been saved.
+```
+
+…shown after a save that failed silently. A diagnostic that lies about impact is worse than a generic one.
+
+### Code-only
+
+```text
+Error: 0x80070005
+```
+
+A code with no human-readable summary, description, or resolution. Standard Errors codes are a search aid, not the message itself.
+
+### Mixed responsibilities
+
+```text
+Invalid email address. (ERR_VALIDATION_42)
+```
+
+This is normal validation feedback dressed up as a system diagnostic. Use ordinary field guidance for input problems; reserve Standard Errors for unexpected failures.
 
 ---
 
