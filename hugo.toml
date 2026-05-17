@@ -3,7 +3,6 @@ title = "Standard Errors"
 theme = "standard-errors"
 locale = "en-GB"
 
-enableRobotsTXT = true
 printPathWarnings = true
 printUnusedTemplates = false
 disableKinds = ["taxonomy", "term"]
