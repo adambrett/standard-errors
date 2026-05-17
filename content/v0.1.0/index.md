@@ -65,13 +65,19 @@ Use one of these values:
 
 The code identifies the class of problem. It is for support, docs, and source search. It should be unique across the codebase so a search leads an engineer directly to the line that generated the diagnostic.
 
-Good codes are short and stable:
+Products may use any code format that fits their codebase, support process, and documentation style. The code must be stable, unique, safe to show to users, and easy to search for.
+
+These are all valid styles:
 
 ```text
 AUTH001
-EXPORT002
-PAYMENT003
+EXPORT-002
+account.connection.unavailable
+sync/offline/not-sent
+Backup.Media.Partial
 ```
+
+Each product SHOULD choose one code style and use it consistently.
 
 Do not put timestamps, user IDs, environment names, or trace IDs in the code.
 
@@ -165,7 +171,7 @@ No. A CLI, web app, mobile app, modal, toast, banner, or dialog can present the 
 
 ### What makes a code good?
 
-A good code is stable, unique, and searchable. When an engineer searches for the code, they should find the place that generated the diagnostic.
+A good code is stable, unique, safe to show to users, and searchable. Each product should choose a format that fits its codebase and support process, then use it consistently. When an engineer searches for the code, they should find the place that generated the diagnostic.
 
 ---
 
